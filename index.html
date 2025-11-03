@@ -1,88 +1,212 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Panitikang Filipino — Full Flashcard Reviewer</title>
-  <style>
-    body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0f1724;color:#e6f2ff;font-family:Inter,system-ui,sans-serif}
-    .card-wrap{perspective:1200px;}
-    .card{width:340px;height:220px;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.9,.3,1);border-radius:14px;box-shadow:0 8px 24px rgba(2,6,23,.6);background:rgba(255,255,255,0.03);}
-    .card.flipped{transform:rotateY(180deg)}
-    .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center}
-    .front{background:rgba(255,255,255,0.04)}
-    .back{background:linear-gradient(180deg,#042831,#0a2430);transform:rotateY(180deg)}
-    .definition{font-size:15px;line-height:1.5}
-    .definition .kw{font-weight:800;text-transform:uppercase}
-    .term{font-size:22px;font-weight:800;text-transform:uppercase}
-    button{margin-top:20px;padding:8px 18px;border:0;border-radius:10px;cursor:pointer;font-weight:600;background:#7dd3fc;color:#042028}
-    .nav{display:flex;gap:10px;margin-top:12px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panitikang Filipino — Game Modes</title>
+<style>
+  :root{
+    --bg:#0f1724; --card:#1e293b; --muted:#9fb0c3; --accent:#7dd3fc;
+    --correct:#10b981; --wrong:#ef4444; --white:#ffffff; --overlay-bg: rgba(15,23,36,0.85);
+    font-family: Inter, system-ui, sans-serif;
+  }
+  body{margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); color:var(--white); padding:20px;}
+  .home, .app{width:100%; max-width:700px; text-align:center;}
+  h1{margin-bottom:24px;}
+  button{margin:12px; padding:12px 20px; border:none; border-radius:10px; cursor:pointer; font-weight:700; font-size:16px; background:var(--accent); color:#042028;}
+  .card-wrap{perspective:1200px;}
+  .card{width:340px;height:220px;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.9,.3,1);border-radius:14px;box-shadow:0 8px 24px rgba(2,6,23,.6);background:rgba(255,255,255,0.03);}
+  .card.flipped{transform:rotateY(180deg);}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center;}
+  .front{background:rgba(255,255,255,0.04);}
+  .back{background:linear-gradient(180deg,#042831,#0a2430);transform:rotateY(180deg);}
+  .definition{font-size:15px;line-height:1.5}
+  .definition .kw{font-weight:800;text-transform:uppercase}
+  .term{font-size:22px;font-weight:800;text-transform:uppercase}
+  .nav{display:flex;gap:10px;margin-top:12px;justify-content:center;}
+  /* MCQ style */
+  .question{margin-bottom:16px; font-weight:700; white-space:pre-wrap;}
+  .choices{display:grid; gap:12px;}
+  .choice{padding:12px; border-radius:10px; cursor:pointer; border:1px solid rgba(255,255,255,0.1); display:flex; gap:12px; align-items:center;}
+  .choice.correct{background:rgba(16,185,129,0.2); border-color:rgba(16,185,129,0.4);}
+  .choice.wrong{background:rgba(239,68,68,0.2); border-color:rgba(239,68,68,0.4);}
+  .choice .label{width:36px; height:36px; border-radius:8px; display:grid; place-items:center; background:rgba(0,0,0,0.15); font-weight:800;}
+  /* Overlay */
+  .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:var(--overlay-bg); z-index:30; padding:20px;}
+  .overlay.show{display:flex;}
+  .overlay-card{width:100%; max-width:520px; background:var(--card); border-radius:12px; padding:18px; text-align:center; border:1px solid rgba(255,255,255,0.06);}
+  .overlay-msg{font-weight:800; font-size:16px;}
+  .overlay-definition{margin-top:8px; color:var(--muted);}
+  .overlay-actions{display:flex; gap:10px; justify-content:center; margin-top:12px;}
+</style>
 </head>
 <body>
-  <div class="card-wrap">
-    <div class="card" id="card">
-      <div class="face front" id="front"></div>
-      <div class="face back" id="back"></div>
+
+<div class="home" id="home">
+  <h1>Panitikang Filipino — Select Game Mode</h1>
+  <button onclick="startMode('MCQ')">Multiple Choice Quiz</button>
+  <button onclick="startMode('FLIP')">Flashcard Flip</button>
+  <button onclick="startMode('FILL')">Fill in the Blank</button>
+</div>
+
+<div class="app" id="app" style="display:none;"></div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <div id="overlayFeedback" class="overlay-msg"></div>
+    <div id="overlayDefinition" class="overlay-definition"></div>
+    <div class="overlay-actions">
+      <button id="overlayNext">Next</button>
+      <button id="overlayHome">Home</button>
     </div>
   </div>
+</div>
+
+<script>
+const data=[
+  {term:'PANITIKAN',def:'Sining ng PAGPAPAHAYAG ng DAMDAMIN at KAISIPAN ng tao sa pamamagitan ng mga salita; ito ay SALAMIN ng LIPUNAN at KASAYSAYAN ng SAMBAYANAN.'},
+  {term:'ANYONG PATULA',def:'Panitikang gumagamit ng SUKAT, TUGMA, at TALINGHAGA; kabilang ang tula, awit, at soneto.'},
+  {term:'ANYONG TULUYAN',def:'Panitikang TUWIRAN o prosa ang paraan ng pagpapahayag; kabilang ang nobela, maikling kuwento, at sanaysay.'},
+  {term:'ANYONG DULA',def:'Panitikang ITINATANGHAL sa entablado, binubuo ng DAYALOGO at AKSIYON.'},
+  {term:'PANITIKANG PASALITA',def:'Panitikang NAISASALIN SA BIBIG at tradisyunal, gaya ng bugtong, salawikain, at epiko.'},
+  {term:'PANITIKANG NASUSULAT',def:'Panitikang NAITATALA SA PAPEL o PRINT, tulad ng nobela at sanaysay.'}
+];
+
+let mode='', questionSet=[], currentIndex=0, score=0, answers=[];
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
+
+function startMode(selectedMode){
+  mode=selectedMode;
+  document.getElementById('home').style.display='none';
+  const app=document.getElementById('app');
+  app.style.display='block';
+  currentIndex=0; score=0; answers=[];
+  if(mode==='MCQ') startMCQ();
+  else if(mode==='FLIP') startFlip();
+  else if(mode==='FILL') startFill();
+}
+
+// ---------------- MCQ ----------------
+function startMCQ(){
+  questionSet=shuffle([...data]).map(q=>{
+    let others=shuffle(data.filter(d=>d.term!==q.term)).slice(0,3).map(d=>d.term);
+    return {...q, options:shuffle([q.term,...others])};
+  });
+  renderMCQ();
+}
+
+function renderMCQ(){
+  const app=document.getElementById('app');
+  if(currentIndex>=questionSet.length){
+    showSummary();
+    return;
+  }
+  const q=questionSet[currentIndex];
+  app.innerHTML=`<div class="question">${q.def}</div><div class="choices" id="choices"></div><div style="margin-top:12px">Score: ${score}</div>`;
+  const choicesEl=document.getElementById('choices');
+  q.options.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='choice';
+    div.innerHTML=`<div class="label">${i+1}</div>${opt}`;
+    div.onclick=()=>handleChoiceMCQ(opt);
+    choicesEl.appendChild(div);
+  });
+}
+
+function handleChoiceMCQ(selected){
+  const q=questionSet[currentIndex];
+  const overlay=document.getElementById('overlay');
+  const fb=document.getElementById('overlayFeedback');
+  const def=document.getElementById('overlayDefinition');
+
+  fb.textContent=selected===q.term?"Correct ✅":"Wrong ❌";
+  def.innerHTML=`Answer: ${q.term}<br><br>${q.def}`;
+  overlay.classList.add('show');
+  answers.push({term:q.term, selected, correct:selected===q.term});
+  document.getElementById('overlayNext').onclick=()=>{
+    overlay.classList.remove('show');
+    currentIndex++;
+    score=answers.filter(a=>a.correct).length;
+    renderMCQ();
+  };
+  document.getElementById('overlayHome').onclick=goHome;
+}
+
+// ---------------- Flashcard Flip ----------------
+let flipIndex=0;
+function startFlip(){
+  const app=document.getElementById('app');
+  flipIndex=0;
+  app.innerHTML=`<div class="card-wrap"><div class="card" id="card"><div class="face front" id="front"></div><div class="face back" id="back"></div></div></div>
   <div class="nav">
     <button id="prev">Previous</button>
     <button id="flip">Flip</button>
     <button id="next">Next</button>
-  </div>
-  <script>
-    const data=[
-      {term:'PANITIKAN',def:'<span class="kw">Sining ng PAGPAPAHAYAG ng DAMDAMIN at KAISIPAN</span> ng tao sa pamamagitan ng mga salita; ito ay <span class="kw">SALAMIN ng LIPUNAN</span> at <span class="kw">KASAYSAYAN ng SAMBAYANAN</span>.'},
-      {term:'ANYONG PATULA',def:'Panitikang gumagamit ng <span class="kw">SUKAT, TUGMA, at TALINGHAGA</span>; kabilang ang tula, awit, at soneto.'},
-      {term:'ANYONG TULUYAN',def:'Panitikang <span class="kw">TUWIRAN</span> o prosa ang paraan ng pagpapahayag; kabilang ang nobela, maikling kuwento, at sanaysay.'},
-      {term:'ANYONG DULA',def:'Panitikang <span class="kw">ITINATANGHAL</span> sa entablado, binubuo ng <span class="kw">DAYALOGO at AKSIYON</span>.'},
-      {term:'PANITIKANG PASALITA',def:'Panitikang <span class="kw">NAISASALIN SA BIBIG</span> at tradisyunal, gaya ng bugtong, salawikain, at epiko.'},
-      {term:'PANITIKANG NASUSULAT',def:'Panitikang <span class="kw">NAITATALA SA PAPEL o PRINT</span>, tulad ng nobela at sanaysay.'},
-      {term:'NATURALISMO',def:'<span class="kw">Paniniwalang hinuhubog ng HEREDITY at KAPALIGIRAN</span> ang buhay ng tao; ipinapakita ang realidad <span class="kw">NANG WALANG PANGHUHUSGA</span>.'},
-      {term:'IDEALISMO',def:'Pilosopiyang naniniwala sa <span class="kw">KATAASANG MORAL</span> at <span class="kw">ESPIRITWAL NA HALAGA</span>.'},
-      {term:'SIMBOLISMO',def:'Teoryang gumagamit ng <span class="kw">SAGISAG at IMAHEN</span> upang ipahayag ang <span class="kw">MALALIM NA KAHULUGAN</span>.'},
-      {term:'PSIKOLOHIKAL NA PANANAW',def:'Tumutukoy sa <span class="kw">MOTIBO, DAMDAMIN, at UGALI</span> ng tauhan sa akda.'},
-      {term:'SOSYOLOHIKAL NA PANANAW',def:'Sinusuri ang <span class="kw">RELASYON NG TAO at LIPUNAN</span>; panitikan bilang <span class="kw">REPLEKSIYON NG LIPUNAN</span>.'},
-      {term:'FEMINISMO',def:'Pinagtitibay ang <span class="kw">KARAPATAN at KAPANGYARIHAN NG KABABAIHAN</span>; sinusuri ang <span class="kw">GENDER BIAS</span>.'},
-      {term:'PANLIPUNANG KAISIPAN',def:'Sinusuri kung paano <span class="kw">REPLEKSIYON NG KALAGAYANG PANLIPUNAN</span> at kultura ang akda.'},
-      {term:'PANGMORAL NA PANANAW',def:'Tumitingin sa <span class="kw">KABUTIHAN, KATARUNGAN, at PANANAGUTAN</span> sa akda.'},
-      {term:'PANG-ANYO NA PANANAW',def:'Nakatuon sa <span class="kw">FORMA, ESTILO, at ESTRUKTURA</span> ng akda.'},
-      {term:'ARKITIPAL NA PANANAW',def:'Nakaugat sa <span class="kw">SIMBOLO at UNIBERSAL NA KARANASAN</span> tulad ng bayani at trahedya.'},
-      {term:'ANIMISMO',def:'Paniniwalang may <span class="kw">ESPIRITU at KAPANGYARIHAN</span> ang kalikasan, ninuno, at diwata.'},
-      {term:'BAHALA NA (PATALISMO)',def:'Pagpapakita ng <span class="kw">PAGSUKO SA KAPALARAN</span> ngunit may <span class="kw">PAGTITIWALA sa DIYOS</span>.'},
-      {term:'EUPHEMISMO',def:'Pag-iwas sa direktang pahayag upang mapanatili ang <span class="kw">HIYA</span> at <span class="kw">AMOR PROPIO</span>.'},
-      {term:'PAKIKISAMA',def:'Pagpapahalaga sa <span class="kw">PAGKAKAISA at SOCIAL HARMONY</span>; inuuna ang grupo kaysa indibidwal.'},
-      {term:'UTANG NA LOOB',def:'Obligasyon ng <span class="kw">LOOB</span> na nakaugat sa <span class="kw">KONSEPTO NG KAPWA</span>.'},
-      {term:'NINGAS-KUGON',def:'Simulaing <span class="kw">MASIGLA PERO DI NAGTATAGAL</span>; simbolo ng kakulangan sa pagpapatuloy.'},
-      {term:'MAÑANA HABIT',def:'Ugaling <span class="kw">PAGPAPALIBAN NG GAWAIN</span>; iniuugnay sa disiplina at produktibidad.'},
-      {term:'HOSPITALITY',def:'Pagpapakita ng <span class="kw">MAPAGPATULOY NA PAGTANGGAP</span> sa panauhin; nakaugat sa <span class="kw">PAKIKISAMA</span>.'}
-    ];
+    <button onclick="goHome()">Home</button>
+  </div>`;
+  showFlip(flipIndex);
 
-    let index=0;
-    const card=document.getElementById('card');
-    const front=document.getElementById('front');
-    const back=document.getElementById('back');
+  document.getElementById('flip').onclick=()=>document.getElementById('card').classList.toggle('flipped');
+  document.getElementById('next').onclick=()=>{flipIndex=(flipIndex+1)%data.length; showFlip(flipIndex);}
+  document.getElementById('prev').onclick=()=>{flipIndex=(flipIndex-1+data.length)%data.length; showFlip(flipIndex);}
+}
 
-    function showCard(i){
-      front.innerHTML='<div class="definition">'+data[i].def+'</div>';
-      back.innerHTML='<div class="term">'+data[i].term+'</div>';
-      card.classList.remove('flipped');
-    }
+function showFlip(i){
+  document.getElementById('front').innerHTML=`<div class="definition">${data[i].def}</div>`;
+  document.getElementById('back').innerHTML=`<div class="term">${data[i].term}</div>`;
+  document.getElementById('card').classList.remove('flipped');
+}
 
-    document.getElementById('flip').addEventListener('click',()=>{
-      card.classList.toggle('flipped');
-    });
+// ---------------- Fill in the Blank ----------------
+function startFill(){
+  questionSet=shuffle([...data]);
+  currentIndex=0; score=0; answers=[];
+  renderFill();
+}
 
-    document.getElementById('next').addEventListener('click',()=>{
-      index=(index+1)%data.length;showCard(index);
-    });
+function renderFill(){
+  const app=document.getElementById('app');
+  if(currentIndex>=questionSet.length){
+    showSummary();
+    return;
+  }
+  const q=questionSet[currentIndex];
+  app.innerHTML=`<div class="question">${q.def}</div>
+  <input type="text" id="userAnswer" placeholder="Type the term here" style="padding:10px; width:80%; margin-top:12px; border-radius:8px; border:none;">
+  <br><button id="submitAnswer" style="margin-top:12px;">Submit</button>
+  <div style="margin-top:12px">Score: ${score}</div>
+  <button onclick="goHome()" style="margin-top:12px;">Home</button>`;
 
-    document.getElementById('prev').addEventListener('click',()=>{
-      index=(index-1+data.length)%data.length;showCard(index);
-    });
+  document.getElementById('submitAnswer').onclick=()=>{
+    const userAns=document.getElementById('userAnswer').value.trim();
+    const correct=userAns.toLowerCase()===q.term.toLowerCase();
+    answers.push({term:q.term, selected:userAns||"(empty)", correct});
+    score=answers.filter(a=>a.correct).length;
+    currentIndex++;
+    renderFill();
+  };
+}
 
-    showCard(index);
-  </script>
+// ---------------- Summary ----------------
+function showSummary(){
+  const app=document.getElementById('app');
+  app.innerHTML='<h2>Quiz Completed!</h2>';
+  app.innerHTML+=`<h3>Score: ${score} / ${questionSet.length}</h3>`;
+  let html='<ol>';
+  answers.forEach(a=>{
+    html+=`<li>${a.term} - Your answer: ${a.selected} - <strong>${a.correct?"Correct":"Wrong"}</strong></li>`;
+  });
+  html+='</ol>';
+  app.innerHTML+=html;
+  app.innerHTML+='<button onclick="startMode(mode)">Restart Quiz</button> <button onclick="goHome()">Home</button>';
+}
+
+// ---------------- Go Home ----------------
+function goHome(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('home').style.display='block';
+}
+</script>
 </body>
 </html>
