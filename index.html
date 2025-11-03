@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Panitikang Filipino — Full Flashcard Reviewer</title>
+  <style>
+    body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0f1724;color:#e6f2ff;font-family:Inter,system-ui,sans-serif}
+    .card-wrap{perspective:1200px;}
+    .card{width:340px;height:220px;position:relative;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.9,.3,1);border-radius:14px;box-shadow:0 8px 24px rgba(2,6,23,.6);background:rgba(255,255,255,0.03);}
+    .card.flipped{transform:rotateY(180deg)}
+    .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center}
+    .front{background:rgba(255,255,255,0.04)}
+    .back{background:linear-gradient(180deg,#042831,#0a2430);transform:rotateY(180deg)}
+    .definition{font-size:15px;line-height:1.5}
+    .definition .kw{font-weight:800;text-transform:uppercase}
+    .term{font-size:22px;font-weight:800;text-transform:uppercase}
+    button{margin-top:20px;padding:8px 18px;border:0;border-radius:10px;cursor:pointer;font-weight:600;background:#7dd3fc;color:#042028}
+    .nav{display:flex;gap:10px;margin-top:12px}
+  </style>
+</head>
+<body>
+  <div class="card-wrap">
+    <div class="card" id="card">
+      <div class="face front" id="front"></div>
+      <div class="face back" id="back"></div>
+    </div>
+  </div>
+  <div class="nav">
+    <button id="prev">Previous</button>
+    <button id="flip">Flip</button>
+    <button id="next">Next</button>
+  </div>
+  <script>
+    const data=[
+      {term:'PANITIKAN',def:'<span class="kw">Sining ng PAGPAPAHAYAG ng DAMDAMIN at KAISIPAN</span> ng tao sa pamamagitan ng mga salita; ito ay <span class="kw">SALAMIN ng LIPUNAN</span> at <span class="kw">KASAYSAYAN ng SAMBAYANAN</span>.'},
+      {term:'ANYONG PATULA',def:'Panitikang gumagamit ng <span class="kw">SUKAT, TUGMA, at TALINGHAGA</span>; kabilang ang tula, awit, at soneto.'},
+      {term:'ANYONG TULUYAN',def:'Panitikang <span class="kw">TUWIRAN</span> o prosa ang paraan ng pagpapahayag; kabilang ang nobela, maikling kuwento, at sanaysay.'},
+      {term:'ANYONG DULA',def:'Panitikang <span class="kw">ITINATANGHAL</span> sa entablado, binubuo ng <span class="kw">DAYALOGO at AKSIYON</span>.'},
+      {term:'PANITIKANG PASALITA',def:'Panitikang <span class="kw">NAISASALIN SA BIBIG</span> at tradisyunal, gaya ng bugtong, salawikain, at epiko.'},
+      {term:'PANITIKANG NASUSULAT',def:'Panitikang <span class="kw">NAITATALA SA PAPEL o PRINT</span>, tulad ng nobela at sanaysay.'},
+      {term:'NATURALISMO',def:'<span class="kw">Paniniwalang hinuhubog ng HEREDITY at KAPALIGIRAN</span> ang buhay ng tao; ipinapakita ang realidad <span class="kw">NANG WALANG PANGHUHUSGA</span>.'},
+      {term:'IDEALISMO',def:'Pilosopiyang naniniwala sa <span class="kw">KATAASANG MORAL</span> at <span class="kw">ESPIRITWAL NA HALAGA</span>.'},
+      {term:'SIMBOLISMO',def:'Teoryang gumagamit ng <span class="kw">SAGISAG at IMAHEN</span> upang ipahayag ang <span class="kw">MALALIM NA KAHULUGAN</span>.'},
+      {term:'PSIKOLOHIKAL NA PANANAW',def:'Tumutukoy sa <span class="kw">MOTIBO, DAMDAMIN, at UGALI</span> ng tauhan sa akda.'},
+      {term:'SOSYOLOHIKAL NA PANANAW',def:'Sinusuri ang <span class="kw">RELASYON NG TAO at LIPUNAN</span>; panitikan bilang <span class="kw">REPLEKSIYON NG LIPUNAN</span>.'},
+      {term:'FEMINISMO',def:'Pinagtitibay ang <span class="kw">KARAPATAN at KAPANGYARIHAN NG KABABAIHAN</span>; sinusuri ang <span class="kw">GENDER BIAS</span>.'},
+      {term:'PANLIPUNANG KAISIPAN',def:'Sinusuri kung paano <span class="kw">REPLEKSIYON NG KALAGAYANG PANLIPUNAN</span> at kultura ang akda.'},
+      {term:'PANGMORAL NA PANANAW',def:'Tumitingin sa <span class="kw">KABUTIHAN, KATARUNGAN, at PANANAGUTAN</span> sa akda.'},
+      {term:'PANG-ANYO NA PANANAW',def:'Nakatuon sa <span class="kw">FORMA, ESTILO, at ESTRUKTURA</span> ng akda.'},
+      {term:'ARKITIPAL NA PANANAW',def:'Nakaugat sa <span class="kw">SIMBOLO at UNIBERSAL NA KARANASAN</span> tulad ng bayani at trahedya.'},
+      {term:'ANIMISMO',def:'Paniniwalang may <span class="kw">ESPIRITU at KAPANGYARIHAN</span> ang kalikasan, ninuno, at diwata.'},
+      {term:'BAHALA NA (PATALISMO)',def:'Pagpapakita ng <span class="kw">PAGSUKO SA KAPALARAN</span> ngunit may <span class="kw">PAGTITIWALA sa DIYOS</span>.'},
+      {term:'EUPHEMISMO',def:'Pag-iwas sa direktang pahayag upang mapanatili ang <span class="kw">HIYA</span> at <span class="kw">AMOR PROPIO</span>.'},
+      {term:'PAKIKISAMA',def:'Pagpapahalaga sa <span class="kw">PAGKAKAISA at SOCIAL HARMONY</span>; inuuna ang grupo kaysa indibidwal.'},
+      {term:'UTANG NA LOOB',def:'Obligasyon ng <span class="kw">LOOB</span> na nakaugat sa <span class="kw">KONSEPTO NG KAPWA</span>.'},
+      {term:'NINGAS-KUGON',def:'Simulaing <span class="kw">MASIGLA PERO DI NAGTATAGAL</span>; simbolo ng kakulangan sa pagpapatuloy.'},
+      {term:'MAÑANA HABIT',def:'Ugaling <span class="kw">PAGPAPALIBAN NG GAWAIN</span>; iniuugnay sa disiplina at produktibidad.'},
+      {term:'HOSPITALITY',def:'Pagpapakita ng <span class="kw">MAPAGPATULOY NA PAGTANGGAP</span> sa panauhin; nakaugat sa <span class="kw">PAKIKISAMA</span>.'}
+    ];
+
+    let index=0;
+    const card=document.getElementById('card');
+    const front=document.getElementById('front');
+    const back=document.getElementById('back');
+
+    function showCard(i){
+      front.innerHTML='<div class="definition">'+data[i].def+'</div>';
+      back.innerHTML='<div class="term">'+data[i].term+'</div>';
+      card.classList.remove('flipped');
+    }
+
+    document.getElementById('flip').addEventListener('click',()=>{
+      card.classList.toggle('flipped');
+    });
+
+    document.getElementById('next').addEventListener('click',()=>{
+      index=(index+1)%data.length;showCard(index);
+    });
+
+    document.getElementById('prev').addEventListener('click',()=>{
+      index=(index-1+data.length)%data.length;showCard(index);
+    });
+
+    showCard(index);
+  </script>
+</body>
+</html>
