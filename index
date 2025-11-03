@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Study & Play — Innovative Thinking + Entrepreneurial Mind (Countdown)</title>
+<style>
+  :root{
+    --bg:#07162a; --card:#071827; --muted:#9fb0c3; --accent:#06b6d4;
+    --correct:#10b981; --wrong:#ef4444; --white:#ffffff;
+    --overlay-bg: rgba(2,6,23,0.8);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(180deg,#041026 0%, #071428 100%); color:var(--white); padding:20px;
+  }
+  .app{width:100%; max-width:980px; border-radius:12px; padding:20px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+       border:1px solid rgba(255,255,255,0.04); box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+  header{display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:12px}
+  header h1{margin:0; font-size:18px}
+  header p{margin:0; color:var(--muted); font-size:13px}
+  .meta{display:flex; gap:10px; align-items:center}
+  .chip{background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:999px; color:var(--muted); font-weight:700; font-size:13px}
+  .card{padding:18px; border-radius:10px; margin-top:6px}
+  .term{font-size:18px; font-weight:800; margin-bottom:6px}
+  .question{color:var(--muted); margin-bottom:14px; white-space:pre-wrap}
+  .choices{display:grid; gap:10px; margin-bottom:12px}
+  .choice{background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; cursor:pointer; border:1px solid rgba(255,255,255,0.03); display:flex; gap:12px; align-items:center}
+  .choice .label{width:36px; height:36px; border-radius:8px; display:grid; place-items:center; background:rgba(0,0,0,0.15); font-weight:800}
+  .choice.correct{background:linear-gradient(90deg, rgba(16,185,129,0.12), rgba(16,185,129,0.06)); border-color: rgba(16,185,129,0.25)}
+  .choice.wrong{background:linear-gradient(90deg, rgba(239,68,68,0.08), rgba(239,68,68,0.04)); border-color: rgba(239,68,68,0.18)}
+  .hint{font-size:13px; color:var(--muted); margin-top:10px}
+  .progress{height:10px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; margin-bottom:12px}
+  .progress > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent), #4ade80)}
+  .footer{display:flex; justify-content:space-between; align-items:center; gap:12px}
+  button{padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--white); cursor:pointer}
+  button.primary{background:var(--accent); color:#042032; border:0; font-weight:700}
+  .result{margin-top:14px; padding:12px; border-radius:8px; background:rgba(255,255,255,0.02); display:none}
+  .result.show{display:block}
+  .definition {margin-top:8px; color:var(--muted); font-size:14px}
+  .overlay {
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+    background:var(--overlay-bg); z-index:30; padding:20px;
+  }
+  .overlay.show { display:flex; }
+  .overlay-card{
+    width:100%; max-width:520px; background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px; padding:18px; text-align:center; border:1px solid rgba(255,255,255,0.06);
+  }
+  .countdown{font-size:42px; font-weight:900; margin:8px 0}
+  .overlay-msg{font-size:16px; color:var(--muted)}
+  .overlay-actions{display:flex; gap:10px; justify-content:center; margin-top:12px}
+  @media (max-width:560px){ .choice .label{width:30px;height:30px;font-size:13px} header h1{font-size:16px} .countdown{font-size:34px} }
+</style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Study and Play Quiz with Countdown">
+    <header>
+      <div>
+        <h1>Study & Play — Innovative Thinking + Entrepreneurial Mind</h1>
+        <p>Full round: all questions included. Order and wording change each play. Press 1–4 to answer.</p>
+      </div>
+      <div class="meta">
+        <div class="chip" id="qIndex">Question 0 / 0</div>
+        <div class="chip" id="score">Score: 0</div>
+      </div>
+    </header>
+
+    <div class="card" id="card" aria-live="polite">
+      <div class="term" id="term">Term</div>
+      <div class="question" id="question">Question text (definition or prompt)</div>
+
+      <div class="choices" id="choices" role="list"></div>
+
+      <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+      <div class="result" id="result" aria-hidden="true">
+        <div id="feedbackTitle" style="font-weight:800"></div>
+        <div class="definition" id="explanation"></div>
+        <div class="hint" id="learnNote"></div>
+      </div>
+
+      <div class="footer">
+        <div>
+          <button id="restartBtn">Restart</button>
+          <button id="toggleDefinition">Hide/Show Definition</button>
+        </div>
+        <div>
+          <button id="playAgain" class="primary">Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Centered overlay for 3-second countdown -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="overlay-card" id="overlayCard">
+      <div id="overlayFeedback" class="overlay-msg" style="font-weight:800"></div>
+      <div id="overlayDefinition" class="overlay-msg" style="margin-top:8px; color:var(--muted)"></div>
+      <div class="countdown" id="countdown">3</div>
+      <div class="overlay-actions">
+        <button id="overlayReset" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--white)">Reset</button>
+        <button id="overlaySkip" class="primary">Skip Wait</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* BANK: all terms + definitions from both reviewer files */
+const BANK = [
+  { term: "Innovative Thinking", definition: "A mindset that challenges the status quo and seeks new solutions to real problems. Key traits include curiosity, experimentation, empathy, iterative learning, and collaboration." },
+  { term: "Lateral Thinking", definition: "A creative thinking approach that views problems from new angles to generate innovative ideas; developed by Edward De Bono to counter rigid logical thinking." },
+  { term: "Systems Thinking", definition: "Study and analysis of how interconnected parts work together toward a common purpose; useful for mapping classroom, family, and curriculum interactions." },
+  { term: "Critical Thinking", definition: "Analyzing facts objectively to form sound judgments and evaluate assumptions and evidence." },
+  { term: "Creative Thinking", definition: "Imaginative thinking that produces alternate representations, concepts, or activities." },
+  { term: "Design Thinking", definition: "A human-centered, iterative process used to solve complex problems; typically includes empathize, define, ideate, prototype, and test." },
+  { term: "Empathize (Design Thinking)", definition: "Stage of design thinking focused on understanding users' needs and challenges through observation and interviews." },
+  { term: "Define (Design Thinking)", definition: "Stage of design thinking where findings are turned into a clear problem statement." },
+  { term: "Ideate (Design Thinking)", definition: "Stage of design thinking where many low-cost solutions are brainstormed." },
+  { term: "Prototype (Design Thinking)", definition: "Stage of design thinking for building quick mockups or low-fidelity versions of a solution." },
+  { term: "Test (Design Thinking)", definition: "Stage of design thinking where prototypes are run with users to collect feedback and iterate." },
+  { term: "Linear Thinking", definition: "A sequential cause-and-effect type of thinking that looks for simple one-to-one connections between cause and effect." },
+  { term: "Event-Oriented Thinking", definition: "Thinking that views life as a series of events, each with causes and effects; less effective for complex systems." },
+  { term: "Entrepreneurship", definition: "A spirit of innovation, risk-taking, and value creation that identifies opportunities and transforms ideas into businesses." },
+  { term: "Opportunity Recognition", definition: "Identifying gaps and inefficiencies in the market." },
+  { term: "Risk Management", definition: "Assessing and mitigating potential risks in ventures." },
+  { term: "Resource Mobilization", definition: "Efficiently using financial, human, and social resources." },
+  { term: "Innovation and Creativity", definition: "Developing novel products, services, or business models that differentiate ventures." },
+  { term: "Value Creation", definition: "Creating value through innovation, job creation, and social impact." },
+  { term: "Customer-Centric Focus", definition: "Addressing customer needs for sustainable success." },
+  { term: "Flexibility and Adaptation", definition: "Navigating unpredictable conditions by adjusting strategies and operations." },
+  { term: "Scalability and Growth Potential", definition: "Expanding revenue or impact without proportionally large increases in resources." },
+  { term: "Long-Term Vision", definition: "Focusing on sustainability and strategic planning for future growth." },
+  { term: "Financial Management", definition: "Ensuring efficient budgeting, capital allocation, and financial planning." },
+  { term: "Leadership and Team Building", definition: "Harnessing collective talent and building effective teams toward shared goals." },
+  { term: "Regulatory Compliance", definition: "Ensuring the venture meets laws, regulations, and industry standards." },
+  { term: "Impact Measurement", definition: "Evaluating the economic, environmental, and social outcomes of a venture." },
+  { term: "Entrepreneurial Behavior", definition: "Behavior shaped by psychological traits like creativity, risk-taking, resilience, cognitive processes, motivation, and environment." },
+  { term: "Entrepreneurial Mindset", definition: "A mindset characterized by creativity, adaptability, proactiveness, and opportunity-seeking despite uncertainty." }
+];
+
+/* Question templates that rephrase using the definition */
+const TEMPLATES = [
+  def => `Which term best matches this definition?\n\n"${def}"`,
+  def => `Which concept is described as: "${def}"`,
+  def => `Identify the term that fits this description: ${def}`,
+  def => `Which of these terms refers to: "${def}"?`,
+  def => `What is the correct term for: ${def}`
+];
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* Create a full question set: one question per BANK item, each with 1 correct + 3 distractors */
+function makeQuestion(item){
+  const others = BANK.filter(p => p.term !== item.term);
+  shuffle(others);
+  const distractors = others.slice(0,3).map(o => o.term);
+  const options = shuffle([ item.term, ...distractors ]);
+  const template = TEMPLATES[Math.floor(Math.random()*TEMPLATES.length)];
+  const questionText = template(item.definition);
+  return { term: item.term, definition: item.definition, questionText, options, correct: item.term };
+}
+
+/* Build & shuffle quiz */
+let questionSet = [];
+function buildQuiz(){
+  const pool = BANK.slice();
+  shuffle(pool);
+  questionSet = pool.map(p => makeQuestion(p));
+  shuffle(questionSet);
+}
+
+/* State */
+let state = { idx:0, score:0, answered:false, countdownTimer:null, countdownValue:3, overlayVisible:false };
+
+/* DOM refs */
+const termEl = document.getElementById('term');
+const qEl = document.getElementById('question');
+const choicesEl = document.getElementById('choices');
+const qIndexEl = document.getElementById('qIndex');
+const scoreEl = document.getElementById('score');
+const progressBar = document.getElementById('progressBar');
+const resultBox = document.getElementById('result');
+const feedbackTitle = document.getElementById('feedbackTitle');
+const explanationEl = document.getElementById('explanation');
+const learnNote = document.getElementById('learnNote');
+const restartBtn = document.getElementById('restartBtn');
+const playAgain = document.getElementById('playAgain');
+const toggleDefinitionBtn = document.getElementById('toggleDefinition');
+
+const overlay = document.getElementById('overlay');
+const overlayFeedback = document.getElementById('overlayFeedback');
+const overlayDefinition = document.getElementById('overlayDefinition');
+const countdownEl = document.getElementById('countdown');
+const overlayReset = document.getElementById('overlayReset');
+const overlaySkip = document.getElementById('overlaySkip');
+
+function init(){
+  buildQuiz();
+  state.idx = 0;
+  state.score = 0;
+  state.answered = false;
+  hideOverlayImmediate();
+  render();
+  updateUI();
+}
+
+function updateUI(){
+  qIndexEl.textContent = `Question ${state.idx+1} / ${questionSet.length}`;
+  scoreEl.textContent = `Score: ${state.score}`;
+  const pct = Math.round((state.idx / questionSet.length)*100);
+  progressBar.style.width = pct + '%';
+}
+
+/* Render current question */
+function render(){
+  if(state.idx >= questionSet.length){
+    showFinal();
+    return;
+  }
+  const q = questionSet[state.idx];
+  termEl.textContent = `Term ${state.idx+1}`;
+  qEl.textContent = q.questionText;
+  resultBox.classList.remove('show');
+  resultBox.style.display = 'none';
+  explanationEl.textContent = '';
+  learnNote.textContent = '';
+  nextDisableAllChoices(false);
+  choicesEl.innerHTML = '';
+  state.answered = false;
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.type = 'button';
+    btn.setAttribute('data-choice', opt);
+    btn.innerHTML = `<span class="label">${i+1}</span><div class="text">${opt}</div>`;
+    btn.addEventListener('click', () => handleSelect(btn, q));
+    choicesEl.appendChild(btn);
+  });
+
+  updateUI();
+}
+
+/* Enable/disable choices' pointer events; also used to prevent further clicks */
+function nextDisableAllChoices(disable){
+  const items = choicesEl.querySelectorAll('.choice');
+  items.forEach(it => {
+    it.style.pointerEvents = disable ? 'none' : 'auto';
+  });
+}
+
+/* When user selects an answer */
+function handleSelect(btn, q){
+  if(state.answered) return;
+  state.answered = true;
+  nextDisableAllChoices(true);
+
+  const chosen = btn.getAttribute('data-choice');
+  const items = choicesEl.querySelectorAll('.choice');
+
+  // mark chosen + correct
+  if(chosen === q.correct){
+    btn.classList.add('correct');
+    state.score++;
+    feedbackTitle.textContent = 'Correct ✓';
+    feedbackTitle.style.color = 'var(--correct)';
+  } else {
+    btn.classList.add('wrong');
+    feedbackTitle.textContent = 'Incorrect ✗';
+    feedbackTitle.style.color = 'var(--wrong)';
+    // highlight correct
+    for(const it of items){
+      if(it.getAttribute('data-choice') === q.correct) { it.classList.add('correct'); break; }
+    }
+  }
+
+  // show the inline result area (for immediate reading)
+  explanationEl.textContent = `${q.correct}: ${q.definition}`;
+  learnNote.textContent = 'Definition shown. Countdown to next question will start.';
+  resultBox.classList.add('show');
+  resultBox.style.display = 'block';
+  updateUI();
+
+  // show overlay with countdown and Reset button — overlay blocks the UI focus
+  showOverlay(q);
+}
+
+/* Show overlay and start 3-second countdown; overlayReset restarts quiz; overlaySkip jumps to next */
+function showOverlay(q){
+  overlayFeedback.textContent = feedbackTitle.textContent;
+  overlayDefinition.textContent = `${q.correct}: ${q.definition}`;
+  countdownEl.textContent = '3';
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+  state.countdownValue = 3;
+  state.overlayVisible = true;
+
+  // clear any existing timers
+  if(state.countdownTimer) { clearInterval(state.countdownTimer); state.countdownTimer = null; }
+
+  state.countdownTimer = setInterval(() => {
+    state.countdownValue -= 1;
+    if(state.countdownValue <= 0){
+      clearInterval(state.countdownTimer);
+      state.countdownTimer = null;
+      hideOverlayImmediate();
+      proceedNext();
+    } else {
+      countdownEl.textContent = String(state.countdownValue);
+    }
+  }, 1000);
+
+  // overlay buttons (Reset and Skip) handlers are attached below
+}
+
+/* hide overlay right away (used when Reset triggered) */
+function hideOverlayImmediate(){
+  if(state.countdownTimer){ clearInterval(state.countdownTimer); state.countdownTimer = null; }
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden','true');
+  state.overlayVisible = false;
+}
+
+/* Proceed to the next question (auto after countdown or when skipping) */
+function proceedNext(){
+  state.idx++;
+  if(state.idx >= questionSet.length){
+    showFinal();
+  } else {
+    render();
+  }
+}
+
+/* Show final screen */
+function showFinal(){
+  termEl.textContent = 'Round Complete';
+  qEl.textContent = `You scored ${state.score} out of ${questionSet.length}.`;
+  choicesEl.innerHTML = '';
+  progressBar.style.width = '100%';
+  resultBox.classList.add('show');
+  explanationEl.textContent = 'Replay to get a new randomized order and fresh question phrasing.';
+  learnNote.textContent = 'Use Play Again to reshuffle and rehearse.';
+  qIndexEl.textContent = 'Completed';
+  // store best in localStorage
+  const best = Number(localStorage.getItem('study_best') || 0);
+  if(state.score > best){
+    localStorage.setItem('study_best', state.score);
+    // small non-blocking notice
+    setTimeout(()=> alert(`New best score: ${state.score}`), 100);
+  }
+}
+
+/* event wiring */
+restartBtn.addEventListener('click', ()=> {
+  // Immediate restart (only enabled outside overlay for safety); act as full reset
+  if(state.overlayVisible){
+    // if overlay visible, ignore; overlayReset handles it
+    return;
+  }
+  init();
+});
+
+playAgain.addEventListener('click', ()=> init());
+
+toggleDefinitionBtn.addEventListener('click', ()=>{
+  if(resultBox.classList.contains('show')){
+    resultBox.classList.remove('show'); resultBox.style.display='none';
+  } else {
+    resultBox.classList.add('show'); resultBox.style.display='block';
+  }
+});
+
+/* Overlay Reset (visible during countdown) — restarts whole quiz */
+overlayReset.addEventListener('click', ()=> {
+  hideOverlayImmediate();
+  init();
+});
+
+/* Overlay Skip Wait — stops countdown and immediately proceed to next */
+overlaySkip.addEventListener('click', ()=> {
+  hideOverlayImmediate();
+  proceedNext();
+});
+
+/* Keyboard support: 1-4 to answer, Enter to skip overlay when visible */
+window.addEventListener('keydown', (e)=>{
+  if(state.overlayVisible){
+    if(e.key === 'Enter'){ // allow quick skip with Enter
+      hideOverlayImmediate();
+      proceedNext();
+    }
+    // allow R to reset quickly during overlay
+    if(e.key.toLowerCase() === 'r'){
+      hideOverlayImmediate();
+      init();
+    }
+    return;
+  }
+  if(!state.answered && ['1','2','3','4'].includes(e.key)){
+    const idx = Number(e.key)-1;
+    const btn = choicesEl.children[idx];
+    if(btn) btn.click();
+  }
+});
+
+/* init on load */
+init();
+
+</script>
+</body>
+</html>
