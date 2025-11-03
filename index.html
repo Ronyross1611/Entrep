@@ -1,0 +1,436 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!doctype html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="utf-8" /&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width,initial-scale=1" /&gt;</p>
+<p class="p1">&lt;title&gt;Study &amp; Play — Innovative Thinking + Entrepreneurial Mind (Countdown)&lt;/title&gt;</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>:root{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--bg:#07162a; --card:#071827; --muted:#9fb0c3; --accent:#06b6d4;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--correct:#10b981; --wrong:#ef4444; --white:#ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>--overlay-bg: rgba(2,6,23,0.8);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>*{box-sizing:border-box}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>html,body{height:100%}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>body{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>margin:0; display:flex; align-items:center; justify-content:center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background:linear-gradient(180deg,#041026 0%, #071428 100%); color:var(--white); padding:20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.app{width:100%; max-width:980px; border-radius:12px; padding:20px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));</p>
+<p class="p1"><span class="Apple-converted-space">       </span>border:1px solid rgba(255,255,255,0.04); box-shadow:0 10px 40px rgba(2,6,23,0.6)}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>header{display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:12px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>header h1{margin:0; font-size:18px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>header p{margin:0; color:var(--muted); font-size:13px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.meta{display:flex; gap:10px; align-items:center}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.chip{background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:999px; color:var(--muted); font-weight:700; font-size:13px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.card{padding:18px; border-radius:10px; margin-top:6px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.term{font-size:18px; font-weight:800; margin-bottom:6px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.question{color:var(--muted); margin-bottom:14px; white-space:pre-wrap}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.choices{display:grid; gap:10px; margin-bottom:12px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.choice{background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; cursor:pointer; border:1px solid rgba(255,255,255,0.03); display:flex; gap:12px; align-items:center}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.choice .label{width:36px; height:36px; border-radius:8px; display:grid; place-items:center; background:rgba(0,0,0,0.15); font-weight:800}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.choice.correct{background:linear-gradient(90deg, rgba(16,185,129,0.12), rgba(16,185,129,0.06)); border-color: rgba(16,185,129,0.25)}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.choice.wrong{background:linear-gradient(90deg, rgba(239,68,68,0.08), rgba(239,68,68,0.04)); border-color: rgba(239,68,68,0.18)}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.hint{font-size:13px; color:var(--muted); margin-top:10px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.progress{height:10px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; margin-bottom:12px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.progress &gt; i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent), #4ade80)}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.footer{display:flex; justify-content:space-between; align-items:center; gap:12px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>button{padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--white); cursor:pointer}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>button.primary{background:var(--accent); color:#042032; border:0; font-weight:700}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.result{margin-top:14px; padding:12px; border-radius:8px; background:rgba(255,255,255,0.02); display:none}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.result.show{display:block}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.definition {margin-top:8px; color:var(--muted); font-size:14px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.overlay {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position:fixed; inset:0; display:none; align-items:center; justify-content:center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background:var(--overlay-bg); z-index:30; padding:20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.overlay.show { display:flex; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.overlay-card{</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width:100%; max-width:520px; background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius:12px; padding:18px; text-align:center; border:1px solid rgba(255,255,255,0.06);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.countdown{font-size:42px; font-weight:900; margin:8px 0}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.overlay-msg{font-size:16px; color:var(--muted)}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.overlay-actions{display:flex; gap:10px; justify-content:center; margin-top:12px}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>@media (max-width:560px){ .choice .label{width:30px;height:30px;font-size:13px} header h1{font-size:16px} .countdown{font-size:34px} }</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="app" role="application" aria-label="Study and Play Quiz with Countdown"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;header&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;Study &amp; Play — Innovative Thinking + Entrepreneurial Mind&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;Full round: all questions included. Order and wording change each play. Press 1–4 to answer.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="meta"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="chip" id="qIndex"&gt;Question 0 / 0&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="chip" id="score"&gt;Score: 0&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card" id="card" aria-live="polite"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="term" id="term"&gt;Term&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="question" id="question"&gt;Question text (definition or prompt)&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="choices" id="choices" role="list"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="progress" aria-hidden="true"&gt;&lt;i id="progressBar"&gt;&lt;/i&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="result" id="result" aria-hidden="true"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="feedbackTitle" style="font-weight:800"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="definition" id="explanation"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="hint" id="learnNote"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="footer"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="restartBtn"&gt;Restart&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="toggleDefinition"&gt;Hide/Show Definition&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="playAgain" class="primary"&gt;Play Again&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Centered overlay for 3-second countdown --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="overlay-card" id="overlayCard"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="overlayFeedback" class="overlay-msg" style="font-weight:800"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="overlayDefinition" class="overlay-msg" style="margin-top:8px; color:var(--muted)"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="countdown" id="countdown"&gt;3&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="overlay-actions"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="overlayReset" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--white)"&gt;Reset&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="overlaySkip" class="primary"&gt;Skip Wait&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">/* BANK: all terms + definitions from both reviewer files */</p>
+<p class="p1">const BANK = [</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Innovative Thinking", definition: "A mindset that challenges the status quo and seeks new solutions to real problems. Key traits include curiosity, experimentation, empathy, iterative learning, and collaboration." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Lateral Thinking", definition: "A creative thinking approach that views problems from new angles to generate innovative ideas; developed by Edward De Bono to counter rigid logical thinking." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Systems Thinking", definition: "Study and analysis of how interconnected parts work together toward a common purpose; useful for mapping classroom, family, and curriculum interactions." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Critical Thinking", definition: "Analyzing facts objectively to form sound judgments and evaluate assumptions and evidence." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Creative Thinking", definition: "Imaginative thinking that produces alternate representations, concepts, or activities." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Design Thinking", definition: "A human-centered, iterative process used to solve complex problems; typically includes empathize, define, ideate, prototype, and test." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Empathize (Design Thinking)", definition: "Stage of design thinking focused on understanding users' needs and challenges through observation and interviews." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Define (Design Thinking)", definition: "Stage of design thinking where findings are turned into a clear problem statement." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Ideate (Design Thinking)", definition: "Stage of design thinking where many low-cost solutions are brainstormed." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Prototype (Design Thinking)", definition: "Stage of design thinking for building quick mockups or low-fidelity versions of a solution." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Test (Design Thinking)", definition: "Stage of design thinking where prototypes are run with users to collect feedback and iterate." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Linear Thinking", definition: "A sequential cause-and-effect type of thinking that looks for simple one-to-one connections between cause and effect." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Event-Oriented Thinking", definition: "Thinking that views life as a series of events, each with causes and effects; less effective for complex systems." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Entrepreneurship", definition: "A spirit of innovation, risk-taking, and value creation that identifies opportunities and transforms ideas into businesses." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Opportunity Recognition", definition: "Identifying gaps and inefficiencies in the market." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Risk Management", definition: "Assessing and mitigating potential risks in ventures." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Resource Mobilization", definition: "Efficiently using financial, human, and social resources." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Innovation and Creativity", definition: "Developing novel products, services, or business models that differentiate ventures." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Value Creation", definition: "Creating value through innovation, job creation, and social impact." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Customer-Centric Focus", definition: "Addressing customer needs for sustainable success." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Flexibility and Adaptation", definition: "Navigating unpredictable conditions by adjusting strategies and operations." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Scalability and Growth Potential", definition: "Expanding revenue or impact without proportionally large increases in resources." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Long-Term Vision", definition: "Focusing on sustainability and strategic planning for future growth." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Financial Management", definition: "Ensuring efficient budgeting, capital allocation, and financial planning." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Leadership and Team Building", definition: "Harnessing collective talent and building effective teams toward shared goals." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Regulatory Compliance", definition: "Ensuring the venture meets laws, regulations, and industry standards." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Impact Measurement", definition: "Evaluating the economic, environmental, and social outcomes of a venture." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Entrepreneurial Behavior", definition: "Behavior shaped by psychological traits like creativity, risk-taking, resilience, cognitive processes, motivation, and environment." },</p>
+<p class="p1"><span class="Apple-converted-space">  </span>{ term: "Entrepreneurial Mindset", definition: "A mindset characterized by creativity, adaptability, proactiveness, and opportunity-seeking despite uncertainty." }</p>
+<p class="p1">];</p>
+<p class="p2"><br></p>
+<p class="p1">/* Question templates that rephrase using the definition */</p>
+<p class="p1">const TEMPLATES = [</p>
+<p class="p1"><span class="Apple-converted-space">  </span>def =&gt; `Which term best matches this definition?\n\n"${def}"`,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>def =&gt; `Which concept is described as: "${def}"`,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>def =&gt; `Identify the term that fits this description: ${def}`,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>def =&gt; `Which of these terms refers to: "${def}"?`,</p>
+<p class="p1"><span class="Apple-converted-space">  </span>def =&gt; `What is the correct term for: ${def}`</p>
+<p class="p1">];</p>
+<p class="p2"><br></p>
+<p class="p1">function shuffle(a){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>for(let i=a.length-1;i&gt;0;i--){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return a;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Create a full question set: one question per BANK item, each with 1 correct + 3 distractors */</p>
+<p class="p1">function makeQuestion(item){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const others = BANK.filter(p =&gt; p.term !== item.term);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>shuffle(others);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const distractors = others.slice(0,3).map(o =&gt; o.term);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const options = shuffle([ item.term, ...distractors ]);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const template = TEMPLATES[Math.floor(Math.random()*TEMPLATES.length)];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const questionText = template(item.definition);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>return { term: item.term, definition: item.definition, questionText, options, correct: item.term };</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Build &amp; shuffle quiz */</p>
+<p class="p1">let questionSet = [];</p>
+<p class="p1">function buildQuiz(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const pool = BANK.slice();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>shuffle(pool);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>questionSet = pool.map(p =&gt; makeQuestion(p));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>shuffle(questionSet);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* State */</p>
+<p class="p1">let state = { idx:0, score:0, answered:false, countdownTimer:null, countdownValue:3, overlayVisible:false };</p>
+<p class="p2"><br></p>
+<p class="p1">/* DOM refs */</p>
+<p class="p1">const termEl = document.getElementById('term');</p>
+<p class="p1">const qEl = document.getElementById('question');</p>
+<p class="p1">const choicesEl = document.getElementById('choices');</p>
+<p class="p1">const qIndexEl = document.getElementById('qIndex');</p>
+<p class="p1">const scoreEl = document.getElementById('score');</p>
+<p class="p1">const progressBar = document.getElementById('progressBar');</p>
+<p class="p1">const resultBox = document.getElementById('result');</p>
+<p class="p1">const feedbackTitle = document.getElementById('feedbackTitle');</p>
+<p class="p1">const explanationEl = document.getElementById('explanation');</p>
+<p class="p1">const learnNote = document.getElementById('learnNote');</p>
+<p class="p1">const restartBtn = document.getElementById('restartBtn');</p>
+<p class="p1">const playAgain = document.getElementById('playAgain');</p>
+<p class="p1">const toggleDefinitionBtn = document.getElementById('toggleDefinition');</p>
+<p class="p2"><br></p>
+<p class="p1">const overlay = document.getElementById('overlay');</p>
+<p class="p1">const overlayFeedback = document.getElementById('overlayFeedback');</p>
+<p class="p1">const overlayDefinition = document.getElementById('overlayDefinition');</p>
+<p class="p1">const countdownEl = document.getElementById('countdown');</p>
+<p class="p1">const overlayReset = document.getElementById('overlayReset');</p>
+<p class="p1">const overlaySkip = document.getElementById('overlaySkip');</p>
+<p class="p2"><br></p>
+<p class="p1">function init(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>buildQuiz();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.idx = 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.score = 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.answered = false;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>hideOverlayImmediate();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>updateUI();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function updateUI(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>qIndexEl.textContent = `Question ${state.idx+1} / ${questionSet.length}`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>scoreEl.textContent = `Score: ${state.score}`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const pct = Math.round((state.idx / questionSet.length)*100);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>progressBar.style.width = pct + '%';</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Render current question */</p>
+<p class="p1">function render(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.idx &gt;= questionSet.length){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>showFinal();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const q = questionSet[state.idx];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>termEl.textContent = `Term ${state.idx+1}`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>qEl.textContent = q.questionText;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>resultBox.classList.remove('show');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>resultBox.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>explanationEl.textContent = '';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>learnNote.textContent = '';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>nextDisableAllChoices(false);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>choicesEl.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.answered = false;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>q.options.forEach((opt, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const btn = document.createElement('button');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.className = 'choice';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.type = 'button';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.setAttribute('data-choice', opt);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.innerHTML = `&lt;span class="label"&gt;${i+1}&lt;/span&gt;&lt;div class="text"&gt;${opt}&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.addEventListener('click', () =&gt; handleSelect(btn, q));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>choicesEl.appendChild(btn);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>updateUI();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Enable/disable choices' pointer events; also used to prevent further clicks */</p>
+<p class="p1">function nextDisableAllChoices(disable){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const items = choicesEl.querySelectorAll('.choice');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>items.forEach(it =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>it.style.pointerEvents = disable ? 'none' : 'auto';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* When user selects an answer */</p>
+<p class="p1">function handleSelect(btn, q){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.answered) return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.answered = true;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>nextDisableAllChoices(true);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const chosen = btn.getAttribute('data-choice');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const items = choicesEl.querySelectorAll('.choice');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// mark chosen + correct</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(chosen === q.correct){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.classList.add('correct');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>state.score++;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>feedbackTitle.textContent = 'Correct ✓';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>feedbackTitle.style.color = 'var(--correct)';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>btn.classList.add('wrong');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>feedbackTitle.textContent = 'Incorrect ✗';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>feedbackTitle.style.color = 'var(--wrong)';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// highlight correct</p>
+<p class="p1"><span class="Apple-converted-space">    </span>for(const it of items){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if(it.getAttribute('data-choice') === q.correct) { it.classList.add('correct'); break; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// show the inline result area (for immediate reading)</p>
+<p class="p1"><span class="Apple-converted-space">  </span>explanationEl.textContent = `${q.correct}: ${q.definition}`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>learnNote.textContent = 'Definition shown. Countdown to next question will start.';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>resultBox.classList.add('show');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>resultBox.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>updateUI();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// show overlay with countdown and Reset button — overlay blocks the UI focus</p>
+<p class="p1"><span class="Apple-converted-space">  </span>showOverlay(q);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Show overlay and start 3-second countdown; overlayReset restarts quiz; overlaySkip jumps to next */</p>
+<p class="p1">function showOverlay(q){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>overlayFeedback.textContent = feedbackTitle.textContent;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>overlayDefinition.textContent = `${q.correct}: ${q.definition}`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>countdownEl.textContent = '3';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>overlay.classList.add('show');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>overlay.setAttribute('aria-hidden','false');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.countdownValue = 3;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.overlayVisible = true;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// clear any existing timers</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.countdownTimer) { clearInterval(state.countdownTimer); state.countdownTimer = null; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.countdownTimer = setInterval(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>state.countdownValue -= 1;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(state.countdownValue &lt;= 0){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>clearInterval(state.countdownTimer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>state.countdownTimer = null;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>hideOverlayImmediate();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>proceedNext();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>countdownEl.textContent = String(state.countdownValue);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}, 1000);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// overlay buttons (Reset and Skip) handlers are attached below</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* hide overlay right away (used when Reset triggered) */</p>
+<p class="p1">function hideOverlayImmediate(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.countdownTimer){ clearInterval(state.countdownTimer); state.countdownTimer = null; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>overlay.classList.remove('show');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>overlay.setAttribute('aria-hidden','true');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.overlayVisible = false;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Proceed to the next question (auto after countdown or when skipping) */</p>
+<p class="p1">function proceedNext(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>state.idx++;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.idx &gt;= questionSet.length){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>showFinal();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* Show final screen */</p>
+<p class="p1">function showFinal(){</p>
+<p class="p1"><span class="Apple-converted-space">  </span>termEl.textContent = 'Round Complete';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>qEl.textContent = `You scored ${state.score} out of ${questionSet.length}.`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>choicesEl.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>progressBar.style.width = '100%';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>resultBox.classList.add('show');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>explanationEl.textContent = 'Replay to get a new randomized order and fresh question phrasing.';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>learnNote.textContent = 'Use Play Again to reshuffle and rehearse.';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>qIndexEl.textContent = 'Completed';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// store best in localStorage</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const best = Number(localStorage.getItem('study_best') || 0);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.score &gt; best){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>localStorage.setItem('study_best', state.score);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// small non-blocking notice</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setTimeout(()=&gt; alert(`New best score: ${state.score}`), 100);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">/* event wiring */</p>
+<p class="p1">restartBtn.addEventListener('click', ()=&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Immediate restart (only enabled outside overlay for safety); act as full reset</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.overlayVisible){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// if overlay visible, ignore; overlayReset handles it</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>init();</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">playAgain.addEventListener('click', ()=&gt; init());</p>
+<p class="p2"><br></p>
+<p class="p1">toggleDefinitionBtn.addEventListener('click', ()=&gt;{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(resultBox.classList.contains('show')){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>resultBox.classList.remove('show'); resultBox.style.display='none';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>resultBox.classList.add('show'); resultBox.style.display='block';</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">/* Overlay Reset (visible during countdown) — restarts whole quiz */</p>
+<p class="p1">overlayReset.addEventListener('click', ()=&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>hideOverlayImmediate();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>init();</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">/* Overlay Skip Wait — stops countdown and immediately proceed to next */</p>
+<p class="p1">overlaySkip.addEventListener('click', ()=&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>hideOverlayImmediate();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>proceedNext();</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">/* Keyboard support: 1-4 to answer, Enter to skip overlay when visible */</p>
+<p class="p1">window.addEventListener('keydown', (e)=&gt;{</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(state.overlayVisible){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(e.key === 'Enter'){ // allow quick skip with Enter</p>
+<p class="p1"><span class="Apple-converted-space">      </span>hideOverlayImmediate();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>proceedNext();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// allow R to reset quickly during overlay</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(e.key.toLowerCase() === 'r'){</p>
+<p class="p1"><span class="Apple-converted-space">      </span>hideOverlayImmediate();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>init();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if(!state.answered &amp;&amp; ['1','2','3','4'].includes(e.key)){</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const idx = Number(e.key)-1;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const btn = choicesEl.children[idx];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(btn) btn.click();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">/* init on load */</p>
+<p class="p1">init();</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
